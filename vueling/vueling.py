@@ -1,4 +1,5 @@
 import requests
+import re
 
 headers_get = {
 	'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -9,6 +10,19 @@ headers_get = {
 	'User-Agent':'Mozilla/5.0 (X11; Linux i686 on x86_64; rv:33.0) Gecko/20100101 Firefox/33.0',
     'Referer':'http://www.vueling.com/es'
 }
+
+headers_get2 = {
+    'Host': 'www.vueling.com',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0',
+    'Accept': '*/*',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate',
+    'X-Requested-With': 'XMLHttpRequest',
+    'Referer': 'http://www.vueling.com/en',
+    'DNT': '1',
+    'Connection': 'keep-alive'
+}
+
 headers_post = {
 	'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Encoding':'gzip, deflate, br',
@@ -21,13 +35,38 @@ headers_post = {
     'Upgrade-Insecure-Requests'	:'1',
     'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0'
 }
+headers_post2 = {
+    'Host': 'tickets.vueling.com',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Referer': 'http://www.vueling.com/en',
+    'DNT': '1',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1'
+}
 
 s = requests.session()
 
-r = s.get('http://www.vueling.com/en', headers=headers_get ,verify=False)
-#print(r.text)
-print(r.cookies)
+# main page get
+r = s.get('http://www.vueling.com/en', headers=headers_get)
 
+# First cookie manager get
+r = s.get('http://www.vueling.com/Base/CookieManager/GetCookieLastSearch', headers=headers_get2 , cookies=s.cookies)
+
+#Render Macros get
+params = {
+    '_':'1483446752180',
+    'callback':'loadMacrosNewHomeSuccess',
+    'idioma':'en-GB',
+    'macroalias':'DestacadosUltimaBusqueda,AreaPrivada,PersonalizedOffersCities,YouWillBePremium',
+    'pageid':'4516',
+    'userSelectedOrigin':'BCN'
+}
+r = s.get('https://www.vueling.com/Base/BaseProxy/RenderMacrosNC', params=params, cookies=s.cookies)
+
+# XMLsearch post
 params = {
     'AvailabilitySearchInputXmlSearchView$DropDownListMarketDay1':'03',
     'AvailabilitySearchInputXmlSearchView$DropDownListMarketDay2':'10',
@@ -64,6 +103,12 @@ params = {
 
 posturl='https://tickets.vueling.com/XmlSearch.aspx'
 r = s.post(posturl, data=params, headers=headers_post, cookies=s.cookies)
+#print(r.text)
+
+geturl='https://tickets.vueling.com/ScheduleSelect.aspx'
+r = s.get(geturl, headers=headers_post2, cookies=s.cookies)
 print(r.text)
 
-
+p = re.compile('\"basicPriceRoute\":\"(.*)\"')
+m = p.match(r.text)
+m.group(0)
