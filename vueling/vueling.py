@@ -1,14 +1,22 @@
 import requests
 import re
+from random import randint
+from bs4 import BeautifulSoup
+
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
 headers_get = {
-	'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-	'Accept-Encoding':'gzip, deflate',
-	'Accept-Language':'en-GB,en;q=0.5',
-	'Connection':'keep-alive',
-	'Host':'tickets.vueling.com',
-	'User-Agent':'Mozilla/5.0 (X11; Linux i686 on x86_64; rv:33.0) Gecko/20100101 Firefox/33.0',
-    'Referer':'http://www.vueling.com/es'
+    'Host': 'www.vueling.com',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate',
+    'DNT': '1',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1'
 }
 
 headers_get2 = {
@@ -50,13 +58,19 @@ headers_post2 = {
 s = requests.session()
 
 # main page get
-r = s.get('http://www.vueling.com/en', headers=headers_get)
+#r = s.get('http://www.vueling.com/en', headers=headers_get)
+
+#f = open("/tmp/b.txt", "w")
+#f.write(r.text)
+#f.close()
 
 # First cookie manager get
-r = s.get('http://www.vueling.com/Base/CookieManager/GetCookieLastSearch', headers=headers_get2 , cookies=s.cookies)
+#r = s.get('http://www.vueling.com/Base/CookieManager/GetCookieLastSearch', headers=headers_get2 , cookies=s.cookies)
 
 #Render Macros get
+
 params = {
+    #'_':str(random_with_N_digits(13)),
     '_':'1483446752180',
     'callback':'loadMacrosNewHomeSuccess',
     'idioma':'en-GB',
@@ -68,10 +82,10 @@ r = s.get('https://www.vueling.com/Base/BaseProxy/RenderMacrosNC', params=params
 
 # XMLsearch post
 params = {
-    'AvailabilitySearchInputXmlSearchView$DropDownListMarketDay1':'03',
-    'AvailabilitySearchInputXmlSearchView$DropDownListMarketDay2':'10',
-    'AvailabilitySearchInputXmlSearchView$DropDownListMarketMonth1':'2017-01',
-    'AvailabilitySearchInputXmlSearchView$DropDownListMarketMonth2':'2017-01',
+    'AvailabilitySearchInputXmlSearchView$DropDownListMarketDay1':'09',
+    'AvailabilitySearchInputXmlSearchView$DropDownListMarketDay2':'11',
+    'AvailabilitySearchInputXmlSearchView$DropDownListMarketMonth1':'2017-02',
+    'AvailabilitySearchInputXmlSearchView$DropDownListMarketMonth2':'2017-03',
     'AvailabilitySearchInputXmlSearchView$DropDownListPassengerType_ADT':'1',
     'AvailabilitySearchInputXmlSearchView$DropDownListPassengerType_CHD':'0',
     'AvailabilitySearchInputXmlSearchView$DropDownListPassengerType_INFANT':'0',
@@ -79,7 +93,7 @@ params = {
     'AvailabilitySearchInputXmlSearchView$ExtraSeat':'',
     'AvailabilitySearchInputXmlSearchView$RadioButtonMarketStructure':'RoundTrip',
     'AvailabilitySearchInputXmlSearchView$ResidentFamNumSelector':'',
-    'AvailabilitySearchInputXmlSearchView$TextBoxMarketDestination1':'Moscow',
+    'AvailabilitySearchInputXmlSearchView$TextBoxMarketDestination1':'Munich',
     'AvailabilitySearchInputXmlSearchView$TextBoxMarketOrigin1':'Barcelona',
     'ErroneousWordDestination1':'',
     'ErroneousWordDestination2':'',
@@ -92,23 +106,37 @@ params = {
     '__EVENTARGUMENT':'',
     '__EVENTTARGET':'AvailabilitySearchInputXmlSearchView$LinkButtonNewSearch',
     '__VIEWSTATE':'/wEPDwUBMGRkTwRPn7sQIfLX6/slb1QXByDT65c=',
-    'arrivalStationCode1':'MOW',
+    'arrivalStationCode1':'MUC',
     'arrivalStationCode2':'',
-    'date_picker':'2017-01-03',
-    'date_picker':'2017-01-10',
+    'date_picker':'2017-02-09',
+    'date_picker':'2017-03-11',
     'departureStationCode1':'BCN',
     'departureStationCode2':'',
     'pageToken':''
 }
-
 posturl='https://tickets.vueling.com/XmlSearch.aspx'
 r = s.post(posturl, data=params, headers=headers_post, cookies=s.cookies)
-#print(r.text)
 
+# scheduleselect get
 geturl='https://tickets.vueling.com/ScheduleSelect.aspx'
 r = s.get(geturl, headers=headers_post2, cookies=s.cookies)
-print(r.text)
 
-p = re.compile('\"basicPriceRoute\":\"(.*)\"')
-m = p.match(r.text)
-m.group(0)
+
+html = BeautifulSoup(r.text,"html.parser")
+idas = html.find_all('table', {'id':'availabilityTable0'})[0].find_all("tbody")[0].find_all("tr")
+vueltas = html.find_all('table', {'id':'availabilityTable1'})[0].find_all("tbody")[0].find_all("tr")
+
+print("Precios IDA")
+for i,entrada in enumerate(idas):
+    precio = entrada.find_all('td',{'class':['price', 'basictd']})[0].find('span', {'class' : 'wrapper_currency'}).getText()
+    hora = entrada.find('span', {'class' : 'fs_14' }).getText()
+    print (i + 1, precio, hora)
+
+print("Precios VUELTA")
+for i,entrada in enumerate(vueltas):
+    precio = entrada.find_all('td',{'class':['price', 'basictd']})[0].find('span', {'class' : 'wrapper_currency'}).getText()
+    hora = entrada.find('span', {'class' : 'fs_14' }).getText()
+    print (i + 1, precio, hora)
+
+
+
