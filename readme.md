@@ -1,5 +1,5 @@
 SkyScrapper
-###########
+===========
 
 * This is a fun project to emulate the behavior of most flight trackers with the convinience that data is freshly generated and the prices reflect the true value in the market, therefore making the raw data transparent to the user
 
@@ -12,6 +12,6 @@ SkyScrapper
 * Furthermore, alerts can be set to send a mail when the prices fall below a certain threshold
 
 Dependencies
-############
+------------
 
 - django (sudo pip install Django)
