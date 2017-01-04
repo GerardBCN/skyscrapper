@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
+from django.utils import timezone
+
 
 LOCALS = (
     ('LCG','A Coruña'),
@@ -149,12 +151,21 @@ class Trip(models.Model):
     destination = models.CharField(max_length=3, choices=LOCALS)
     date_departure = models.DateField()
     date_return = models.DateField()
+    activated = models.BooleanField(default=True)
+    published_date = models.DateTimeField(blank=True, null=True)
+    def __str__(self):
+        return "{}-{} {}/{}".format(self.origin,self.destination,self.date_departure,self.date_return)
+    def save(self):
+            self.published_date = timezone.now()
+            self.save()
 
 class TimeSeries(models.Model):
     trip = models.ForeignKey(Trip, related_name="timeseries")
     time = models.DateTimeField()
     origin = models.CharField(max_length=3)
     destination = models.CharField(max_length=3)
+    def __str__(self):
+        return "{}-{} {} parent:{}".format(self.origin,self.destination,self.time, self.trip)
 
 class PricePoint(models.Model):
     timestamp = models.DateTimeField(auto_now_add = True)
@@ -162,5 +173,7 @@ class PricePoint(models.Model):
     timeseries = models.ForeignKey(TimeSeries, related_name="pricepoints")
     class Meta:
         ordering = ['timestamp']
+    def __str__(self):
+        return "{} {} parent:{}".format(self.timestamp,self.price,self.timeseries)
 
 
