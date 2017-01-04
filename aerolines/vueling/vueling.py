@@ -1,5 +1,4 @@
 import requests
-import re
 from random import randint
 from bs4 import BeautifulSoup
 

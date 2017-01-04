@@ -3,7 +3,7 @@ import requests
 from random import randint
 from bs4 import BeautifulSoup
 from .forms import TripForm
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Trip
 
 def random_with_N_digits(n):
@@ -12,19 +12,20 @@ def random_with_N_digits(n):
     return randint(range_start, range_end)
 
 def trip_new(request):
-    form = TripForm()
+    if request.method == "POST":
+        form = TripForm(request.POST)
+        if form.is_valid():
+            trip = form.save(commit=False)
+            trip.save()
+            return redirect('trip_list')
+    else:
+        form = TripForm()
     return render(request, 'tracker/trip_edit.html', {'form': form})
 
 
 def trip_list(request):
-    return render(request, 'tracker/trip_list.html', {})
-
-def create_trip(origin, destination, date_departure, date_return):
-
-    #from datetime import date
-    #example_date = date(2007, 12, 5)
-    t = Trip(origin=origin, destination=destination, date_departure=date_departure, date_return=date_return)
-    t.save()
+    trips = Trip.objects.order_by('published_date')
+    return render(request, 'tracker/trip_list.html', {'trips': trips})
 
 def vueling_track(trip):
 

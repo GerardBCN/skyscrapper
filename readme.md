@@ -15,3 +15,4 @@ Dependencies
 ------------
 
 - django (sudo pip install Django)
+- celery task scheduler (sudo pip install celery)

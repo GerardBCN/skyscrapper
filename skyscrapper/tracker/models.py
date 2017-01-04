@@ -152,12 +152,9 @@ class Trip(models.Model):
     date_departure = models.DateField()
     date_return = models.DateField()
     activated = models.BooleanField(default=True)
-    published_date = models.DateTimeField(blank=True, null=True)
+    published_date = models.DateTimeField(auto_now_add = True)
     def __str__(self):
         return "{}-{} {}/{}".format(self.origin,self.destination,self.date_departure,self.date_return)
-    def save(self):
-            self.published_date = timezone.now()
-            self.save()
 
 class TimeSeries(models.Model):
     trip = models.ForeignKey(Trip, related_name="timeseries")
