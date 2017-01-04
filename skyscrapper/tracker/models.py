@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from jsonfield import JSONField
 from django.db import models
 
 LOCALS = (
@@ -153,7 +152,6 @@ class Trip(models.Model):
 
 class TimeSeries(models.Model):
     trip = models.ForeignKey(Trip, related_name="timeseries")
-    pricePointIds = JSONField()
     time = models.DateTimeField()
     origin = models.CharField(max_length=3)
     destination = models.CharField(max_length=3)
