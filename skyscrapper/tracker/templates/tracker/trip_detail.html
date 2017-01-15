@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <div>
+        <h3>{{ trip.get_origin_display }}-{{ trip.get_destination_display }} {{ trip.date_departure }}{% if not trip.one_way %}/{{ trip.date_return }}{% endif %}</h3>
+        <h4>Departure/s</h4>
+         <div id="chart_departures"></div>
+        {% if not flights.departure.flightnames %}<p>No flights found</p>{% endif %}
+
+        {% if not trip.one_way %}
+            <h4>Return/s</h4>
+            <div id="chart_returns"></div>
+            {% if not flights.return.flightnames %}<p>No flights found</p>{% endif %}
+        {% endif %}
+
+    </div>
+
+<script>
+
+
+
+google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(drawDepartures);
+
+{% if not trip.one_way %}{% if flights.departure %}
+google.charts.setOnLoadCallback(drawReturns);
+{% endif %}{% endif %}
+
+function drawDepartures() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Date');
+      {% for dep in flights.departure.flightnames %}
+        data.addColumn('number', '{{ dep }}');
+      {% endfor %}
+
+      data.addRows([
+      {% for timearray in flights.departure.values %}
+
+        [{% for val in timearray %}
+            {{ val }},
+        {% endfor %}],
+      {% endfor %}
+        ])
+
+      var options = {
+        hAxis: {
+          gridlines: {
+            count: -1,
+            units: {
+              days: {format: ['MMM dd']},
+              hours: {format: ['HH:mm', 'ha']},
+            }
+          },
+          minorGridlines: {
+            units: {
+              hours: {format: ['hh:mm:ss a', 'ha']},
+              minutes: {format: ['HH:mm a Z', ':mm']}
+            }
+          }
+        },
+
+        vAxis: {
+          title: 'Price evolution (Euros)'
+        },
+        series: {
+          1: {curveType: 'function'}
+        },
+        height: 350,
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_departures'));
+      chart.draw(data, options);
+    }
+
+{% if not trip.one_way %}{% if flights.return %}
+function drawReturns() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Date');
+      {% for dep in flights.return.flightnames %}
+        data.addColumn('number', '{{ dep }}');
+      {% endfor %}
+
+      data.addRows([
+      {% for timearray in flights.return.values %}
+
+        [{% for val in timearray %}
+            {{ val }},
+        {% endfor %}],
+      {% endfor %}
+        ])
+
+
+      var options = {
+        hAxis: {
+          gridlines: {
+            count: -1,
+            units: {
+              days: {format: ['MMM dd']},
+              hours: {format: ['HH:mm', 'ha']},
+            }
+          },
+          minorGridlines: {
+            units: {
+              hours: {format: ['hh:mm:ss a', 'ha']},
+              minutes: {format: ['HH:mm a Z', ':mm']}
+            }
+          }
+        },
+
+        vAxis: {
+          title: 'Price evolution (Euros)'
+        },
+        series: {
+          1: {curveType: 'function'}
+        },
+        height: 350,
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_returns'));
+      chart.draw(data, options);
+    }
+{% endif %}{% endif %}
+</script>
+{% endblock %}

@@ -152,6 +152,7 @@ class Trip(models.Model):
     date_departure = models.DateField()
     date_return = models.DateField()
     activated = models.BooleanField(default=True)
+    one_way = models.BooleanField(default=False)
     published_date = models.DateTimeField(auto_now_add = True)
     def __str__(self):
         return "{}-{} {}/{}".format(self.origin,self.destination,self.date_departure,self.date_return)
@@ -161,12 +162,14 @@ class TimeSeries(models.Model):
     time = models.DateTimeField()
     origin = models.CharField(max_length=3)
     destination = models.CharField(max_length=3)
+    isreturn = models.BooleanField(default=False)
+    flightname = models.CharField(max_length=20, default="NA")
     def __str__(self):
         return "{}-{} {} parent:{}".format(self.origin,self.destination,self.time, self.trip)
 
 class PricePoint(models.Model):
-    timestamp = models.DateTimeField(auto_now_add = True)
-    price = models.DecimalField(max_digits=5, decimal_places=3)
+    timestamp = models.DateTimeField(default=timezone.now)
+    price = models.DecimalField(max_digits=10, decimal_places=5)
     timeseries = models.ForeignKey(TimeSeries, related_name="pricepoints")
     class Meta:
         ordering = ['timestamp']

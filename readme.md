@@ -15,4 +15,13 @@ Dependencies
 ------------
 
 - django (sudo pip install Django)
-- celery task scheduler (sudo pip install celery)
+- celery 4.0
+- pip install django-celery-beat
+
+Run
+---
+
+- server: python manage.py runserver
+- rabbitMQ (broker): sudo rabbitmq-server
+- celery beat for periodic tasks: celery -A skyscrapper beat -l info -S django
+- celery worker: celery -A skyscrapper worker -l info

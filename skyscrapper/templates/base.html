@@ -1,0 +1,38 @@
+{% load staticfiles %}
+{% load static %}
+<html>
+    <head>
+        <title>Take Me Home!</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+        <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <link href='//fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{% static 'tracker/main.css' %}">
+    </head>
+    <body>
+        <div class="page-header">
+                <h1><a href="/"><span class="glyphicon glyphicon-plane"></span>TakeMeHome.me<sub style="font-size:25px; color:#FFBF00"><i>Beta</i></sub></a></h1>
+        </div>
+        <div class="sub-header content">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="{% url 'trip_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus-sign"></span>Add new trip for price time-evolution analysis</a>
+                </div>
+                <div class="col-md-6">
+                    <a href="{% url 'new_takeMeHome_trip' %}" class="top-menu"><span class="glyphicon glyphicon-plus-sign"></span>Add new TakeMeHome trip</a>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+                <div class="col-md-6">
+                    {% block content %}{% endblock %}
+                </div>
+                <div class="col-md-6">
+                    {% block content_right %}{% endblock %}
+                </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,47 @@
+/* main css */
+body{
+    font-family:'Open Sans';
+}
+.page-header {
+    background-color: #2c3e50;
+    margin-top: 0;
+    padding: 20px 20px 20px 40px;
+    margin-bottom:0;
+    border-bottom:0;
+}
+
+.page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
+    color: #ffffff;
+    font-size: 36pt;
+    text-decoration: none;
+}
+
+.content {
+    margin-left: 40px;
+}
+
+h1, h2, h3, h4 {
+    font-family: "Oswald";
+}
+
+.post-form p label{
+    width:50%;
+    max-width:200px;
+    text-align:right;
+}
+
+.top-menu span{
+    padding-right:10px;
+}
+
+.sub-header{
+    padding-top:15px;
+    padding-bottom:15px;
+    background-color:rgba(80,80,80,0.8);
+    margin-left:0;
+    padding-left:40px;
+}
+
+.sub-header a{
+    color:white;
+}

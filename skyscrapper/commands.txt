@@ -1,0 +1,3 @@
+celery -A skyscrapper worker -l info
+celery -A skyscrapper beat -l info -S django
+python manage.py runserver

@@ -1,9 +1,0 @@
-{% extends 'tracker/base.html' %}
-
-{% block content %}
-{% for trip in trips %}
-    <div>
-        <h3><a href="">{{ trip.origin }}-{{ trip.destination }} {{ trip.date_departure }}/{{ trip.date_return }}</a></h3>
-    </div>
-{% endfor %}
-{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h3>Best deals between {{ trip_info.0 }}-{{ trip_info.1 }}</h3>
+<p><strong>Last check: </strong>{{ last_check_time }} (CET)</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Departure flight</th>
+            <th>Return flight</th>
+            <th>Total price (Euros)</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for t in ct %}
+    <tr>
+        <td>{{ t.0.time }} {{ t.0.flightname }}</td>
+        <td>{{ t.1.time }} {{ t.1.flightname }}</td>
+        <td>{{ t.2 }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

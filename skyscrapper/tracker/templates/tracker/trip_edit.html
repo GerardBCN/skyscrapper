@@ -1,9 +1,27 @@
-{% extends 'tracker/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <h1>New trip</h1>
+    <h2>New trip for price variation analysis</h2>
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-default">Save</button>
     </form>
+
+    <script>
+        $("#id_one_way").change(function() {
+            $("#id_date_return").toggle();
+            $("#id_date_return").parent().find("label").toggle();
+            if ($("#id_date_return").css("display") == "none"){
+                $("#id_date_return").val("01/01/2017");
+            } else {
+                $("#id_date_return").val("");
+            }
+        });
+    </script>
+    <script>
+      $(function() {
+        $( "#id_date_departure" ).datepicker();
+        $( "#id_date_return" ).datepicker();
+      });
+    </script>
 {% endblock %}
