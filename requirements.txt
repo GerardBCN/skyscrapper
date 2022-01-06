@@ -17,7 +17,7 @@ apt-xapian-index==0.45
 argparse==1.2.1
 beautifulsoup4==4.4.0
 billiard==3.5.0.2
-celery==4.0.2
+celery==5.2.2
 chardet==2.0.1
 colorama==0.2.5
 command-not-found==0.3
